@@ -7,20 +7,29 @@
 </head>
 <body onload="init()">
     <h1>Hello, World</h1>
+    <p>I removed all rows with NA data.</p>
+    <p>Maximum sales price is an outlier at $185 million. I removed this data point.</p>
+    <p>Start date is 1998-12-30.</p>
     <svg width=1920 height=1080></svg>
     <script>
+
+        var priceGraph = null;
+        
         async function init(){
             
             var svgHeight = 500;
             var svgWidth = 1000;
             
-            var data = await d3.csv("https://raw.githubusercontent.com/kalinalinkalina/flint/master/data/flint.csv");
+            var data = await d3.csv("https://raw.githubusercontent.com/kalinalinkalina/flint/master/data/flint_months_noNAs_noExpectedLead.csv");
+            
+            
             
             //https://stackoverflow.com/questions/17226576/creating-a-text-labeled-x-axis-with-an-ordinal-scale-in-d3-js   
-            var xScale = d3.scaleLinear().domain([0,75000]).range([0,svgWidth]); //distance
-            var yScale = d3.scaleLinear().domain([185000000,0]).range([0,svgHeight]); //price
+            var xScale = d3.scaleLinear().domain([0,60000]).range([0,svgWidth]); //distance
+            //var yScale = d3.scaleLinear().domain([185000000,0]).range([0,svgHeight]); //price
+            var yScale = d3.scaleLinear().domain([3600000,0]).range([0,svgHeight]); //price //cut out NAs and 185million
                      
-            d3.select("svg")
+            priceGraph = d3.select("svg")
                 .append("g")
                 .attr("transform","translate(50,50)")
                 .selectAll("rect")
@@ -30,7 +39,7 @@
                     .attr("x", function(d,i){return xScale(d.DistToBoundary);})
                     .attr("y", function(d,y){return yScale(d.SalesPrice);})
                     .attr("width", 2)
-                    .attr("height", function(d,i){return svgHeight-yScale(d.LandAverageTemperature)});
+                    .attr("height", function(d,i){return svgHeight-yScale(d.SalesPrice)});
             
             d3.select("svg")
                 .append("g")
@@ -41,6 +50,31 @@
                 .append("g")
                 .attr("transform", "translate(50,550)")
                 .call(d3.axisBottom(xScale));
+        }
+        
+        async function updateChart(){
+            // recompute density estimation
+            kde = kernelDensityEstimator(kernelEpanechnikov(7), x.ticks(binNumber))
+            density =  kde( data.map(function(d){  return d.price; }) )
+            console.log(binNumber)
+            console.log(density)
+
+            // update the chart
+            curve
+              .datum(density)
+              .transition()
+              .duration(1000)
+              .attr("d",  d3.line()
+                .curve(d3.curveBasis)
+                  .x(function(d) { return x(d[0]); })
+                  .y(function(d) { return y(d[1]); })
+              );
+            
+            // Listen to the slider?
+          d3.select("#mySlider").on("change", function(d){
+            selectedValue = this.value
+            updateChart(selectedValue)
+            })
         }
     </script>
 </body>
