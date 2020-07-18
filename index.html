@@ -9,10 +9,8 @@
     <h1>Hello, World</h1>
     <p>I removed all rows with NA data.</p>
     <p>Maximum sales price is an outlier at $185 million. I removed this data point. Next highest is 3.6 million</p>
-    <p>Only showing houses that cost up to 200,000</p>
-    <p>Only showing distances up to 10000 (goes up to 60000)</p>
     <p>Converted exact date to months-since-start-date (1998-12-30)</p>
-    <input type="range" name="mySlider" id=mySlider min="1" max="223" value="195" step="1" list="steplist" onchange="updateSliderText(this.value);">
+    <input type="range" name="mySlider" id=mySlider min="0" max="223" value="184" step="1" list="steplist" onchange="updateSliderText(this.value);">
     <datalist id="steplist">
         <option>1</option>
         <!--<option>4</option>
@@ -29,25 +27,25 @@
         <option>136</option>
         <option>148</option>
         <option>160</option>
-        <option>172</option>
-        <option>184</option>-->
-        <option>196</option>
-        <!--<option>208</option>-->
+        <option>172</option>-->
+        <option>184</option>
+        <!--<option>196</option>
+        <option>208</option>-->
         <option>222</option>
     </datalist> 
-    <p id="sliderText">April 2014: Start of Flint water crisis</p>
+    <p id="sliderText">May 2014: Month after start of Flint water crisis</p>
     <svg width=1920 height=1080></svg>
     <script>
 
         var data = null;
         var priceGraph = null;
-        var selectedMonth = 222;
+        var selectedMonth = 184;
         var svgHeight = 500;
         var svgWidth = 1000;
         
         //https://stackoverflow.com/questions/17226576/creating-a-text-labeled-x-axis-with-an-ordinal-scale-in-d3-js   
-        var xScale = d3.scaleLinear().domain([0,10000]).range([0,svgWidth]); //distance
-        var yScale = d3.scaleLinear().domain([200000,0]).range([0,svgHeight]); //price
+        var yScale = d3.scalePow().exponent(0.5).domain([300000,0]).range([0,svgHeight]); //price
+        var xScale = d3.scalePow().exponent(0.5).domain([0,50000]).range([0,svgWidth]); //distance
         
         function filterByMonth(d){
             return parseInt(d.Month) === selectedMonth;
@@ -61,15 +59,35 @@
             
             drawChart();
             
+            // Add axes
             d3.select("svg")
                 .append("g")
                 .attr("transform", "translate(80,50)")
                 .call(d3.axisLeft(yScale));
-            
             d3.select("svg")
                 .append("g")
-                .attr("transform", "translate(80,550)")
-                .call(d3.axisBottom(xScale));
+                    .attr("transform", "translate(80,550)")
+                    .call(d3.axisBottom(xScale));
+            
+            // Add axes labels
+            d3.select("svg")
+                .append("text")
+                .attr("class", "x label")
+                .attr("text-anchor", "end")
+                .attr("x", svgWidth / 2 + 80)
+                .attr("y", svgHeight + 100)
+                .text("Distance to Affected Boundary (m)");
+            d3.select("svg")
+                .append("text")
+                .attr("class", "y label")
+                .attr("text-anchor", "end")
+                .attr("y", 0)
+                .attr("x", -svgHeight/2 + 80)
+                .attr("dy", ".75em")
+                .attr("transform", "rotate(-90)")
+                .text("Sales Price of House ($)");
+                
+            
         }
 
         
