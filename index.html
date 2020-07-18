@@ -8,32 +8,59 @@
 <body onload="init()">
     <h1>Hello, World</h1>
     <p>I removed all rows with NA data.</p>
-    <p>Maximum sales price is an outlier at $185 million. I removed this data point.</p>
-    <p>Start date is 1998-12-30.</p>
+    <p>Maximum sales price is an outlier at $185 million. I removed this data point. Next highest is 3.6 million</p>
+    <p>Only showing houses that cost up to 200,000</p>
+    <p>Only showing distances up to 10000 (goes up to 60000)</p>
+    <p>Converted exact date to months-since-start-date (1998-12-30)</p>
+    <input type="range" name="mySlider" id=mySlider min="1" max="223" value="50">
     <svg width=1920 height=1080></svg>
     <script>
 
+        var data = null;
         var priceGraph = null;
+        var selectedMonth = 222;
+        var svgHeight = 500;
+        var svgWidth = 1000;
+        
+        //https://stackoverflow.com/questions/17226576/creating-a-text-labeled-x-axis-with-an-ordinal-scale-in-d3-js   
+        var xScale = d3.scaleLinear().domain([0,10000]).range([0,svgWidth]); //distance
+        var yScale = d3.scaleLinear().domain([200000,0]).range([0,svgHeight]); //price
+        
+        function filterByMonth(d){
+            return parseInt(d.Month) === selectedMonth;
+        }
         
         async function init(){
-            
-            var svgHeight = 500;
-            var svgWidth = 1000;
-            
-            var data = await d3.csv("https://raw.githubusercontent.com/kalinalinkalina/flint/master/data/flint_months_noNAs_noExpectedLead.csv");
-            
-            
-            
-            //https://stackoverflow.com/questions/17226576/creating-a-text-labeled-x-axis-with-an-ordinal-scale-in-d3-js   
-            var xScale = d3.scaleLinear().domain([0,60000]).range([0,svgWidth]); //distance
-            //var yScale = d3.scaleLinear().domain([185000000,0]).range([0,svgHeight]); //price
-            var yScale = d3.scaleLinear().domain([3600000,0]).range([0,svgHeight]); //price //cut out NAs and 185million
-                     
+            data = await d3.csv("https://raw.githubusercontent.com/kalinalinkalina/flint/master/data/flint_months_noNAs_noExpectedLead.csv");
             priceGraph = d3.select("svg")
                 .append("g")
-                .attr("transform","translate(50,50)")
+                .attr("transform","translate(80,50)");
+            
+            drawChart();
+            
+            d3.select("svg")
+                .append("g")
+                .attr("transform", "translate(80,50)")
+                .call(d3.axisLeft(yScale));
+            
+            d3.select("svg")
+                .append("g")
+                .attr("transform", "translate(80,550)")
+                .call(d3.axisBottom(xScale));
+        }
+
+        
+        async function drawChart(){
+            
+            var data_month = await data.filter(filterByMonth);
+            
+            // Update data
+            bars = priceGraph
                 .selectAll("rect")
-                .data(data)
+                .data(data_month);
+            
+            // Add bars for new data
+            bars
                 .enter()
                 .append("rect")
                     .attr("x", function(d,i){return xScale(d.DistToBoundary);})
@@ -41,41 +68,32 @@
                     .attr("width", 2)
                     .attr("height", function(d,i){return svgHeight-yScale(d.SalesPrice)});
             
-            d3.select("svg")
-                .append("g")
-                .attr("transform", "translate(50,50)")
-                .call(d3.axisLeft(yScale));
+            // Update old bars in same place
+            bars
+                .transition().duration(250)
+                .attr("y", function(d,y){return yScale(d.SalesPrice);})
+                .attr("height", function(d,i){return svgHeight-yScale(d.SalesPrice)});
             
-            d3.select("svg")
-                .append("g")
-                .attr("transform", "translate(50,550)")
-                .call(d3.axisBottom(xScale));
+            
+            // Remove old bars
+            bars
+                .exit()
+                .remove();
+                
+            /*
+            priceGraph
+                .transition()
+                .duration(1000)
+                .attr("y", function(d,y){return yScale(d.SalesPrice);})
+                .attr("height", function(d,i){return svgHeight-yScale(d.SalesPrice)});
+                */
         }
         
-        async function updateChart(){
-            // recompute density estimation
-            kde = kernelDensityEstimator(kernelEpanechnikov(7), x.ticks(binNumber))
-            density =  kde( data.map(function(d){  return d.price; }) )
-            console.log(binNumber)
-            console.log(density)
-
-            // update the chart
-            curve
-              .datum(density)
-              .transition()
-              .duration(1000)
-              .attr("d",  d3.line()
-                .curve(d3.curveBasis)
-                  .x(function(d) { return x(d[0]); })
-                  .y(function(d) { return y(d[1]); })
-              );
-            
-            // Listen to the slider?
-          d3.select("#mySlider").on("change", function(d){
-            selectedValue = this.value
-            updateChart(selectedValue)
-            })
-        }
+        // Listen to the slider?
+        d3.select("#mySlider").on("change", function(d){
+            selectedMonth = parseInt(this.value);
+            drawChart();
+        });
     </script>
 </body>
 </html>
