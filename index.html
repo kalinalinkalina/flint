@@ -16,7 +16,7 @@
             var svgHeight = 500;
             var svgWidth = 1000;
             
-            var data = await d3.csv("data/globalTemps.csv");
+            var data = await d3.csv("data/flint.csv");
             var x = d3.scale().domain([1,3192]).range([0,svgWidth]);
             var y = d3.scale().domain([-2.08,19.021]).range([0,svgHeight]);
             d3.select("svg")
