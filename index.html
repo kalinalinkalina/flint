@@ -2,10 +2,8 @@
 <html>
 <head lang="en">
     <meta charset="UTF-8">
-    <title></title>
     <script src="http://d3js.org/d3.v5.min.js" language="JavaScript"></script>
-    <style>
-    </style>
+    <style></style>
 </head>
 <body onload="init()">
     <h1>Hello, World</h1>
@@ -16,9 +14,12 @@
             var svgHeight = 500;
             var svgWidth = 1000;
             
-            var data = await d3.csv("data/flint.csv");
-            var x = d3.scale().domain([1,3192]).range([0,svgWidth]);
-            var y = d3.scale().domain([-2.08,19.021]).range([0,svgHeight]);
+            var data = await d3.csv("https://raw.githubusercontent.com/kalinalinkalina/flint/master/data/flint.csv");
+            
+            //https://stackoverflow.com/questions/17226576/creating-a-text-labeled-x-axis-with-an-ordinal-scale-in-d3-js   
+            var xScale = d3.scaleLinear().domain([0,75000]).range([0,svgWidth]); //distance
+            var yScale = d3.scaleLinear().domain([185000000,0]).range([0,svgHeight]); //price
+                     
             d3.select("svg")
                 .append("g")
                 .attr("transform","translate(50,50)")
@@ -26,10 +27,20 @@
                 .data(data)
                 .enter()
                 .append("rect")
-                    .attr("x", function(d,i){return x(i);})
-                    .attr("y", function(d,y){return y(d);})
+                    .attr("x", function(d,i){return xScale(d.DistToBoundary);})
+                    .attr("y", function(d,y){return yScale(d.SalesPrice);})
                     .attr("width", 2)
-                    .attr("height", function(d,i){return svgHeight-y(d)});
+                    .attr("height", function(d,i){return svgHeight-yScale(d.LandAverageTemperature)});
+            
+            d3.select("svg")
+                .append("g")
+                .attr("transform", "translate(50,50)")
+                .call(d3.axisLeft(yScale));
+            
+            d3.select("svg")
+                .append("g")
+                .attr("transform", "translate(50,550)")
+                .call(d3.axisBottom(xScale));
         }
     </script>
 </body>
