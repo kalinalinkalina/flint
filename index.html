@@ -14,20 +14,22 @@
     
     <div id="tooltip" style="opacity:0; position:absolute; background: white;"></div>
     
-    <h2 id="leadSliderText">April 2015</h2>
+    <h2 id="leadSliderText">April 2015</h2><br/>
     <svg id="colorbar" width=500 height=30></svg><br/>
-    <input type="range" name="leadSlider" id="leadSlider" min="195" max="223" value="223" step="1"  onchange="updateLeadSliderText(this.value);" style="width: 500px;">
+    <input type="range" name="leadSlider" id="leadSlider" min="195" max="223" value="223" step="1"  onchange="updateLeadSliderText(this.value);" style="width: 500px;"><br/>
     <svg id="bar_leadxprice" width=1280 height=600></svg><br/>
     
     
-    <h2 id="distanceSliderText">May 2014: Start of Flint water crisis</h2>
+    <h2 id="distanceSliderText">May 2014: Start of Flint water crisis</h2><br/>
     <input type="range" name="distanceSlider" id="distanceSlider" min="0" max="223" value="184" step="1" list="steplist" onchange="updateDistanceSliderText(this.value);" style="width: 500px;">
     <datalist id="steplist">
         <option value="1">1</option>
         <option value="184">184</option>
         <option value="222">222</option>
-    </datalist> 
-    <svg id="bar_distxprice" width=1280 height=600></svg>
+    </datalist> <br/>
+    <svg id="bar_distxprice" width=1280 height=600>
+        <text x="1085" y="113" fill="#fdb130">May 2014: Start of crisis</text>
+    </svg>
     <script>
 
         var data = null;
@@ -38,7 +40,8 @@
         var svgHeight = 500;
         var svgWidth = 1000;
         
-        var plasma = d3.scaleSequential().domain([195,223]).interpolator(d3.interpolatePlasma);
+        var plasmaLead = d3.scaleSequential().domain([195,223]).interpolator(d3.interpolatePlasma);
+        var plasmaDist = d3.scaleSequential().domain([1,223]).interpolator(d3.interpolatePlasma);
         
         //https://stackoverflow.com/questions/17226576/creating-a-text-labeled-x-axis-with-an-ordinal-scaleDist-in-d3-js   
         var yScaleDist = d3.scalePow().exponent(0.5).domain([300000,0]).range([0,svgHeight]); //price
@@ -83,7 +86,7 @@
                 .attr("class", "x label")
                 .attr("text-anchor", "end")
                 .attr("x", svgWidth / 2 + 80)
-                .attr("y", svgHeight + 100)
+                .attr("y", svgHeight + 90)
                 .text("Distance to Water Pipe Boundary (m)");
             d3.select("#bar_distxprice")
                 .append("text")
@@ -106,7 +109,7 @@
                 .attr("y", 0)
                 .attr("height", 50)
                 .attr("width", 500)
-                .style("fill", function(d,i){return plasma(d);})
+                .style("fill", function(d,i){return plasmaLead(d);})
             
             leadGraph = d3.select("#bar_leadxprice")
                 .append("g")
@@ -130,7 +133,7 @@
                 .attr("class", "x label")
                 .attr("text-anchor", "end")
                 .attr("x", svgWidth / 2 + 80)
-                .attr("y", svgHeight + 100)
+                .attr("y", svgHeight + 90)
                 .text("Lead Level (μg/L)");
             d3.select("#bar_leadxprice")
                 .append("text")
@@ -199,15 +202,22 @@
             // Draw regression line
             var lg = calcLinear(data_month, "DistToBoundary", "SalesPrice", d3.min(data_month, function(d){ return d.DistToBoundary}), d3.min(data_month, function(d){ return d.SalesPrice}));
             
-            await distanceGraph.selectAll("line").remove();
+            //await distanceGraph.selectAll("line").remove();
             
             var line = distanceGraph
                 .append("line")
+                .data(data_month)
                 .attr("x1", xScaleDist(lg.ptA.x))
                 .attr("y1", yScaleDist(lg.ptA.y))
                 .attr("x2", xScaleDist(lg.ptB.x))
                 .attr("y2", yScaleDist(lg.ptB.y))
-                .style("stroke", "blue");
+                .style("stroke", function(d,i){return plasmaDist(d.Month);})
+                .style("stroke-width", function(d,i){
+                    if(d.Month == 184){
+                        return 5;
+                    }
+                    return 1;
+                });
             
         }
         
@@ -263,7 +273,7 @@
             leadGraph
                 //.update()
                 .selectAll("circle")
-                .style("fill", function(d,i){return plasma(d.Month);});
+                .style("fill", function(d,i){return plasmaLead(d.Month);});
         }
         
         // Listen to the sliders
