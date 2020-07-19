@@ -166,7 +166,7 @@
             
             mapChart
                 .selectAll("path")
-                .data(data)
+                .data(bb.coordinates)
                 .join("path")
                 .attr("d", path)
                 .attr("fill", "#088")
