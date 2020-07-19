@@ -2,7 +2,8 @@
 <html>
 <head lang="en">
     <meta charset="UTF-8">
-    <script src="http://d3js.org/d3.v5.min.js" language="JavaScript"></script>
+    <script  type="text/javascript" src="http://d3js.org/d3.v5.min.js"></script>
+    <script type="text/javascript" src="https://d3js.org/topojson.v1.min.js"></script> 
     <style></style>
 </head>
 <body onload="init()">
@@ -10,7 +11,11 @@
     <p>I removed all rows with NA data.</p>
     <p>Maximum sales price is an outlier at $185 million. I removed this data point. Next highest is 3.6 million</p>
     <p>Converted exact date to months-since-start-date (1998-12-30)</p>
-    <input type="range" name="mySlider" id=mySlider min="0" max="223" value="184" step="1" list="steplist" onchange="updateSliderText(this.value);">
+    <input type="range" name="leadSlider" id="leadSlider" min="195" max="223" value="195" step="1"  onchange="updateLeadSliderText(this.value);">
+    <p id="leadSliderText">April 2015</p>
+    <svg id="bar_leadxprice" width=1280 height=600></svg><br/>
+    
+    <input type="range" name="distanceSlider" id="distanceSlider" min="0" max="223" value="184" step="1" list="steplist" onchange="updateDistanceSliderText(this.value);">
     <datalist id="steplist">
         <option>1</option>
         <!--<option>4</option>
@@ -33,51 +38,59 @@
         <option>208</option>-->
         <option>222</option>
     </datalist> 
-    <p id="sliderText">May 2014: Month after start of Flint water crisis</p>
-    <svg width=1920 height=1080></svg>
+    <p id="distanceSliderText">May 2014: Start of Flint water crisis</p>
+    <svg id="bar_distxprice" width=1280 height=600></svg>
     <script>
 
         var data = null;
-        var priceGraph = null;
-        var selectedMonth = 184;
+        var distanceGraph = null;
+        var leadGraph = null;
+        var selectedMonthDist = 184;
+        var selectedMonthLead = 195;
         var svgHeight = 500;
         var svgWidth = 1000;
         
-        //https://stackoverflow.com/questions/17226576/creating-a-text-labeled-x-axis-with-an-ordinal-scale-in-d3-js   
-        var yScale = d3.scalePow().exponent(0.5).domain([300000,0]).range([0,svgHeight]); //price
-        var xScale = d3.scalePow().exponent(0.5).domain([0,50000]).range([0,svgWidth]); //distance
+        //https://stackoverflow.com/questions/17226576/creating-a-text-labeled-x-axis-with-an-ordinal-scaleDist-in-d3-js   
+        var yScalePrice = d3.scalePow().exponent(0.5).domain([300000,0]).range([0,svgHeight]); //price
+        var xScaleDist = d3.scalePow().exponent(0.5).domain([0,50000]).range([0,svgWidth]); //distance
+        var xScaleLead = d3.scalePow().exponent(0.5).domain([0,0.15]).range([0,svgWidth]); //lead
         
-        function filterByMonth(d){
-            return parseInt(d.Month) === selectedMonth;
+        function filterByMonthDist(d){
+            return parseInt(d.Month) === selectedMonthDist;
+        }
+        function filterByMonthLead(d){
+            return parseInt(d.Month) === selectedMonthLead;
         }
         
         async function init(){
             data = await d3.csv("https://raw.githubusercontent.com/kalinalinkalina/flint/master/data/flint_months_noNAs_noExpectedLead.csv");
-            priceGraph = d3.select("svg")
+            
+            ////////////////// Draw Distance vs Price bar chart //////////////////
+            distanceGraph = d3.select("#bar_distxprice")
                 .append("g")
                 .attr("transform","translate(80,50)");
             
-            drawChart();
+            drawDistanceChart();
             
             // Add axes
-            d3.select("svg")
+            d3.select("#bar_distxprice")
                 .append("g")
                 .attr("transform", "translate(80,50)")
-                .call(d3.axisLeft(yScale));
-            d3.select("svg")
+                .call(d3.axisLeft(yScalePrice));
+            d3.select("#bar_distxprice")
                 .append("g")
                     .attr("transform", "translate(80,550)")
-                    .call(d3.axisBottom(xScale));
+                    .call(d3.axisBottom(xScaleDist));
             
             // Add axes labels
-            d3.select("svg")
+            d3.select("#bar_distxprice")
                 .append("text")
                 .attr("class", "x label")
                 .attr("text-anchor", "end")
                 .attr("x", svgWidth / 2 + 80)
                 .attr("y", svgHeight + 100)
-                .text("Distance to Affected Boundary (m)");
-            d3.select("svg")
+                .text("Distance to Water Pipe Boundary (m)");
+            d3.select("#bar_distxprice")
                 .append("text")
                 .attr("class", "y label")
                 .attr("text-anchor", "end")
@@ -86,17 +99,55 @@
                 .attr("dy", ".75em")
                 .attr("transform", "rotate(-90)")
                 .text("Sales Price of House ($)");
-                
+            ////////////////////////////////////////////////////////////////////////
+            
+            ////////////////// Draw Lead vs Price bar chart //////////////////
+            leadGraph = d3.select("#bar_leadxprice")
+                .append("g")
+                .attr("transform","translate(80,50)");
+            
+            drawLeadChart();
+            
+            // Add axes
+            d3.select("#bar_leadxprice")
+                .append("g")
+                .attr("transform", "translate(80,50)")
+                .call(d3.axisLeft(yScalePrice));
+            d3.select("#bar_leadxprice")
+                .append("g")
+                    .attr("transform", "translate(80,550)")
+                    .call(d3.axisBottom(xScaleLead));
+            
+            // Add axes labels
+            d3.select("#bar_leadxprice")
+                .append("text")
+                .attr("class", "x label")
+                .attr("text-anchor", "end")
+                .attr("x", svgWidth / 2 + 80)
+                .attr("y", svgHeight + 100)
+                .text("Lead Level (μg/L)");
+            d3.select("#bar_leadxprice")
+                .append("text")
+                .attr("class", "y label")
+                .attr("text-anchor", "end")
+                .attr("y", 0)
+                .attr("x", -svgHeight/2 + 80)
+                .attr("dy", ".75em")
+                .attr("transform", "rotate(-90)")
+                .text("Sales Price of House ($)");
+            
+            
+            
             
         }
 
         
-        async function drawChart(){
+        async function drawDistanceChart(){
             
-            var data_month = await data.filter(filterByMonth);
+            var data_month = await data.filter(filterByMonthDist);
             
             // Update data
-            bars = priceGraph
+            var bars = distanceGraph
                 .selectAll("rect")
                 .data(data_month);
             
@@ -104,45 +155,79 @@
             bars
                 .enter()
                 .append("rect")
-                    .attr("x", function(d,i){return xScale(d.DistToBoundary);})
-                    .attr("y", function(d,y){return yScale(d.SalesPrice);})
+                    .attr("x", function(d,i){return xScaleDist(d.DistToBoundary);})
+                    .attr("y", function(d,y){return yScalePrice(d.SalesPrice);})
                     .attr("width", 2)
-                    .attr("height", function(d,i){return svgHeight-yScale(d.SalesPrice)});
+                    .attr("height", function(d,i){return svgHeight-yScalePrice(d.SalesPrice)});
             
             // Update old bars in same place
             bars
                 .transition().duration(250)
-                .attr("y", function(d,y){return yScale(d.SalesPrice);})
-                .attr("height", function(d,i){return svgHeight-yScale(d.SalesPrice)});
+                .attr("y", function(d,y){return yScalePrice(d.SalesPrice);})
+                .attr("height", function(d,i){return svgHeight-yScalePrice(d.SalesPrice)});
             
             
             // Remove old bars
             bars
                 .exit()
                 .remove();
-                
-            /*
-            priceGraph
-                .transition()
-                .duration(1000)
-                .attr("y", function(d,y){return yScale(d.SalesPrice);})
-                .attr("height", function(d,i){return svgHeight-yScale(d.SalesPrice)});
-                */
         }
         
-        // Listen to the slider?
-        d3.select("#mySlider").on("change", function(d){
-            selectedMonth = parseInt(this.value);
-            drawChart();
-        });
+        async function drawLeadChart(){
+            
+            var data_month = await data.filter(filterByMonthLead);
+            // Update data
+            var bars = leadGraph
+                .selectAll("rect")
+                .data(data_month);
+            
+            // Add bars for new data
+            bars
+                .enter()
+                .append("rect")
+                    .attr("x", function(d,i){return xScaleLead(d.LeadLevel);})
+                    .attr("y", function(d,y){return yScalePrice(d.SalesPrice);})
+                    .attr("width", 2)
+                    .attr("height", function(d,i){return svgHeight-yScalePrice(d.SalesPrice)});
+            
+            // Update old bars in same place
+            bars
+                .transition().duration(250)
+                .attr("y", function(d,y){return yScalePrice(d.SalesPrice);})
+                .attr("height", function(d,i){return svgHeight-yScalePrice(d.SalesPrice)});
+            
+            
+            // Remove old bars
+            bars
+                .exit()
+                .remove();
+        }
         
-        function updateSliderText(val){
-            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        // Listen to the sliders
+        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        
+        d3.select("#distanceSlider").on("change", function(d){
+            selectedMonthDist = parseInt(this.value);
+            drawDistanceChart();
+        });
+        function updateDistanceSliderText(val){
             var startDate = new Date(1998, 12, 12);
             var monthsSinceStart = parseInt(val);
             var currentDate = new Date(startDate.setMonth(startDate.getMonth()+monthsSinceStart));
             var dateString = monthNames[currentDate.getMonth()] + " " + currentDate.getFullYear();
-            document.getElementById('sliderText').innerHTML = dateString; 
+            document.getElementById('distanceSliderText').innerHTML = dateString; 
+        }
+        
+        d3.select("#leadSlider").on("change", function(d){
+            selectedMonthLead = parseInt(this.value);
+            drawLeadChart();
+        });
+        function updateLeadSliderText(val){
+            var startDate = new Date(1998, 12, 12);
+            var monthsSinceStart = parseInt(val);
+            var currentDate = new Date(startDate.setMonth(startDate.getMonth()+monthsSinceStart));
+            var dateString = monthNames[currentDate.getMonth()] + " " + currentDate.getFullYear();
+            document.getElementById('leadSliderText').innerHTML = dateString; 
         }
         
     </script>
