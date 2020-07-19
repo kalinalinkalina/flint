@@ -11,34 +11,22 @@
     <p>I removed all rows with NA data.</p>
     <p>Maximum sales price is an outlier at $185 million. I removed this data point. Next highest is 3.6 million</p>
     <p>Converted exact date to months-since-start-date (1998-12-30)</p>
-    <input type="range" name="leadSlider" id="leadSlider" min="195" max="223" value="195" step="1"  onchange="updateLeadSliderText(this.value);" style="width: 500px;"></br>
-    <svg id="colorbar" width=500 height=30></svg>
-    <p id="leadSliderText">April 2015</p>
+    
+    <div id="tooltip" style="opacity:0; position:absolute; background: white;"></div>
+    
+    <h2 id="leadSliderText">April 2015</h2>
+    <svg id="colorbar" width=500 height=30></svg><br/>
+    <input type="range" name="leadSlider" id="leadSlider" min="195" max="223" value="223" step="1"  onchange="updateLeadSliderText(this.value);" style="width: 500px;">
     <svg id="bar_leadxprice" width=1280 height=600></svg><br/>
+    
+    
+    <h2 id="distanceSliderText">May 2014: Start of Flint water crisis</h2>
     <input type="range" name="distanceSlider" id="distanceSlider" min="0" max="223" value="184" step="1" list="steplist" onchange="updateDistanceSliderText(this.value);" style="width: 500px;">
     <datalist id="steplist">
-        <option>1</option>
-        <!--<option>4</option>
-        <option>16</option>
-        <option>28</option>
-        <option>40</option>
-        <option>52</option>
-        <option>64</option>
-        <option>76</option>
-        <option>88</option>
-        <option>100</option>
-        <option>112</option>
-        <option>124</option>
-        <option>136</option>
-        <option>148</option>
-        <option>160</option>
-        <option>172</option>-->
-        <option>184</option>
-        <!--<option>196</option>
-        <option>208</option>-->
-        <option>222</option>
+        <option value="1">1</option>
+        <option value="184">184</option>
+        <option value="222">222</option>
     </datalist> 
-    <p id="distanceSliderText">May 2014: Start of Flint water crisis</p>
     <svg id="bar_distxprice" width=1280 height=600></svg>
     <script>
 
@@ -46,7 +34,7 @@
         var distanceGraph = null;
         var leadGraph = null;
         var selectedMonthDist = 184;
-        var selectedMonthLead = 195;
+        var selectedMonthLead = 223;
         var svgHeight = 500;
         var svgWidth = 1000;
         
@@ -162,6 +150,8 @@
         
         async function drawDistanceChart(){
             
+            var div = d3.select("#tooltip");
+            
             var data_month = await data.filter(filterByMonthDist);
             
             var dots = distanceGraph
@@ -173,7 +163,30 @@
                 .append("circle")
                 .attr("r", 3)
                 .attr("cx", function(d,i){return xScaleDist(d.DistToBoundary);})
-                .attr("cy", function(d,y){return yScaleDist(d.SalesPrice);});
+                .attr("cy", function(d,y){return yScaleDist(d.SalesPrice);})
+                .on('mouseover', function (d, i) {
+                    d3.select(this).transition()
+                    .duration('50')
+                    .attr('opacity', '.85');
+                    //Makes the new div appear on hover:
+                    div.transition()
+                    .duration(50)
+                    .style("opacity", 1);
+                    let text = "Distance to Boundary: " + d.DistToBoundary + "<br/>Sales Price: " + d.SalesPrice;
+                    div.html(text)
+                        .style("left", (d3.event.pageX + 10) + "px")
+                        .style("top", (d3.event.pageY - 15) + "px")
+                })
+                .on('mouseout', function (d, i) {
+                    d3.select(this).transition()
+                    .duration('50')
+                    .attr('opacity', '1');
+                    //Makes the new div disappear:
+                    div.transition()
+                    .duration('50')
+                    .style("opacity", 0);
+                });
+                
             
             dots
                 .transition().duration(30)
@@ -200,6 +213,8 @@
         
         async function drawLeadChart(){
 
+            var div = d3.select("#tooltip");
+            
             var data_month = await data.filter(filterByMonthLead);
             
             var dots = leadGraph
@@ -212,7 +227,29 @@
                 //.attr("class", "dot")
                 .attr("r", 3)
                 .attr("cx", function(d,i){return xScaleLead(d.LeadLevel);})
-                .attr("cy", function(d,i){return yScaleLead(d.SalesPrice);});
+                .attr("cy", function(d,i){return yScaleLead(d.SalesPrice);})
+                .on('mouseover', function (d, i) {
+                    d3.select(this).transition()
+                    .duration('50')
+                    .attr('opacity', '.85');
+                    //Makes the new div appear on hover:
+                    div.transition()
+                    .duration(50)
+                    .style("opacity", 1);
+                    let text = "Lead Level: " + d.LeadLevel + "<br/>Sales Price: " + d.SalesPrice;
+                    div.html(text)
+                        .style("left", (d3.event.pageX + 10) + "px")
+                        .style("top", (d3.event.pageY - 15) + "px")
+                })
+                .on('mouseout', function (d, i) {
+                    d3.select(this).transition()
+                    .duration('50')
+                    .attr('opacity', '1');
+                    //Makes the new div disappear:
+                    div.transition()
+                    .duration('50')
+                    .style("opacity", 0);
+                });
                 
             dots
                 .transition().duration(0)
