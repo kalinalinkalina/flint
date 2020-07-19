@@ -152,27 +152,48 @@
             
             ////////////////// Draw Map //////////////////
             
-            d3.json("https://raw.githubusercontent.com/kalinalinkalina/flint/master/data/Michigan.geojson").then(function(bb){
+            mapChart = d3.select("#map")
+                .append("g")
+                .attr("transform", "translate(80,50)");
             
             var projection = d3.geoAlbersUsa();
 				   //.translate([svgWidth/2, svgHeight/2])    // translate to center of screen
 				   //.scale([1000]);
-            
+
             var path = d3.geoPath().projection(projection); 
             
-            mapChart = d3.select("map")
-                .append("g")
-                .attr("transform", "translate(80,50)");
+           var geojson = d3.json("https://raw.githubusercontent.com/kalinalinkalina/flint/master/data/custom.geojson").then(function(json){
             
+               projection.fitSize([svgWidth,svgHeight], json);
+               
+            /*for(var i=0; i<data.length; i++){
+                var lat = data.Latitude;
+                var lon = data.Longitude;
+                json.features.push()
+            }*/
+               
+               
             mapChart
                 .selectAll("path")
-                .data(bb.coordinates)
+                .data(json.features)
                 .join("path")
+                .attr("z-index", 1)
                 .attr("d", path)
                 .attr("fill", "#088")
+                .attr("fill-opacity", "0.5")
                 .attr("stroke", "#000");
                 
             });
+            
+            mapChart.selectAll("circle")
+                .data(data)
+                .enter()
+                .append("circle")
+                .attr("z-index", -1)
+                .attr("cx", function(d){return projection([d.Longitude, d.Latitude])[0];})
+                .attr("cy", function(d){return projection([d.Longitude, d.Latitude])[1];})
+                .attr("r", 3)
+                .style("fill", "red");
             
             
             
