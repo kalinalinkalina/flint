@@ -152,19 +152,28 @@
             
             ////////////////// Draw Map //////////////////
             
-            var projection = d3.geoMercator()
-                .center([0,5])
-                .scale(900);
+            d3.json("data/michigan.geojson").then(function(bb){
+            
+            var projection = d3.geoAlbersUsa();
+				   //.translate([svgWidth/2, svgHeight/2])    // translate to center of screen
+				   //.scale([1000]);
             
             var path = d3.geoPath().projection(projection); 
             
             mapChart = d3.select("map")
                 .append("g")
                 .attr("transform", "translate(80,50)");
-                
-            d3.json("https://raw.githubusercontent.com/kalinalinkalina/flint/master/data/GeneseeCounty.json", function(json){
+            
+            mapChart
+                .selectAll("path")
+                .data(data)
+                .join("path")
+                .attr("d", path)
+                .attr("fill", "#088")
+                .attr("stroke", "#000");
                 
             });
+            
             
             
             //////////////////////////////////////////////
