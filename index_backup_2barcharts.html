@@ -51,19 +51,15 @@
         var svgWidth = 1000;
         
         //https://stackoverflow.com/questions/17226576/creating-a-text-labeled-x-axis-with-an-ordinal-scaleDist-in-d3-js   
-        var yScalePrice = d3.scalePow().exponent(0.5).domain([3000000,0]).range([0,svgHeight]); //price
+        var yScalePrice = d3.scalePow().exponent(0.5).domain([300000,0]).range([0,svgHeight]); //price
         var xScaleDist = d3.scalePow().exponent(0.5).domain([0,50000]).range([0,svgWidth]); //distance
-        var xScaleLead = d3.scalePow().exponent(0.5).domain([0,0.65]).range([0,svgWidth]); //lead
+        var xScaleLead = d3.scalePow().exponent(0.5).domain([0,0.15]).range([0,svgWidth]); //lead
         
         function filterByMonthDist(d){
-            var month = parseInt(d.Month);
-            return month === selectedMonthDist;
-            //return (parseInt(d.Month) <= selectedMonthDist);
+            return parseInt(d.Month) === selectedMonthDist;
         }
         function filterByMonthLead(d){
-            var month = parseInt(d.Month);
-            //return month === selectedMonthLead;
-            return (month >= 195 && month <= selectedMonthLead);
+            return parseInt(d.Month) === selectedMonthLead;
         }
         
         async function init(){
@@ -150,63 +146,59 @@
             
             var data_month = await data.filter(filterByMonthDist);
             
-            var dots = distanceGraph
-                .selectAll("circle")
+            // Update data
+            var bars = distanceGraph
+                .selectAll("rect")
                 .data(data_month);
             
-            dots
+            // Add bars for new data
+            bars
                 .enter()
-                .append("circle")
-                .attr("r", 3)
-                .attr("cx", function(d,i){return xScaleDist(d.DistToBoundary);})
-                .attr("cy", function(d,y){return yScalePrice(d.SalesPrice);});
+                .append("rect")
+                    .attr("x", function(d,i){return xScaleDist(d.DistToBoundary);})
+                    .attr("y", function(d,y){return yScalePrice(d.SalesPrice);})
+                    .attr("width", 2)
+                    .attr("height", function(d,i){return svgHeight-yScalePrice(d.SalesPrice)});
             
-            dots
-                .transition().duration(30)
-                .attr("cx", function(d,i){return xScaleDist(d.DistToBoundary);})
-                .attr("cy", function(d,y){return yScalePrice(d.SalesPrice);});
+            // Update old bars in same place
+            bars
+                .transition().duration(250)
+                .attr("y", function(d,y){return yScalePrice(d.SalesPrice);})
+                .attr("height", function(d,i){return svgHeight-yScalePrice(d.SalesPrice)});
             
-            dots.exit().remove();
             
-            
-            // Draw regression line
-            var lg = calcLinear(data_month, "DistToBoundary", "SalesPrice", d3.min(data_month, function(d){ return d.DistToBoundary}), d3.min(data_month, function(d){ return d.SalesPrice}));
-            
-            await distanceGraph.selectAll("line").remove();
-            
-            var line = distanceGraph
-                .append("line")
-                .attr("x1", xScaleDist(lg.ptA.x))
-                .attr("y1", yScalePrice(lg.ptA.y))
-                .attr("x2", xScaleDist(lg.ptB.x))
-                .attr("y2", yScalePrice(lg.ptB.y))
-                .style("stroke", "blue");
-            
+            // Remove old bars
+            bars
+                .exit()
+                .remove();
         }
         
         async function drawLeadChart(){
             
             var data_month = await data.filter(filterByMonthLead);
-            
-            var dots = leadGraph
-                .selectAll("circle")
+            // Update data
+            var bars = leadGraph
+                .selectAll("rect")
                 .data(data_month);
             
-            dots
+            // Add bars for new data
+            bars
                 .enter()
-                .append("circle")
-                //.attr("class", "dot")
-                .attr("r", 3)
-                .attr("cx", function(d,i){return xScaleLead(d.LeadLevel);})
-                .attr("cy", function(d,i){return yScalePrice(d.SalesPrice);});
-                //.style("fill", function(d,i){return color(cValue(d);)});
+                .append("rect")
+                    .attr("x", function(d,i){return xScaleLead(d.LeadLevel);})
+                    .attr("y", function(d,y){return yScalePrice(d.SalesPrice);})
+                    .attr("width", 2)
+                    .attr("height", function(d,i){return svgHeight-yScalePrice(d.SalesPrice)});
             
-            dots
-                .transition().duration(0)
-                .attr("cx", function(d,i){return xScaleLead(d.LeadLevel);})
-                .attr("cy", function(d,i){return yScalePrice(d.SalesPrice);});
+            // Update old bars in same place
+            bars
+                .transition().duration(250)
+                .attr("y", function(d,y){return yScalePrice(d.SalesPrice);})
+                .attr("height", function(d,i){return svgHeight-yScalePrice(d.SalesPrice)});
             
-            dots
+            
+            // Remove old bars
+            bars
                 .exit()
                 .remove();
         }
@@ -238,94 +230,6 @@
             document.getElementById('leadSliderText').innerHTML = dateString; 
         }
         
-        
-        
-    // Returns an object with two points, where each point is an object with an x and y coordinate
-    function calcLinear(data, x, y, minX, minY){
-      /////////
-      //SLOPE//
-      /////////
-
-      // Let n = the number of data points
-      var n = data.length;
-
-      // Get just the points
-      var pts = [];
-      data.forEach(function(d,i){
-        var obj = {};
-        obj.x = parseFloat(d[x]);
-        obj.y = parseFloat(d[y]);
-        obj.mult = obj.x*obj.y;
-        if (obj.y > 0){
-            pts.push(obj);
-        }
-      });
-      // Let a equal n times the summation of all x-values multiplied by their corresponding y-values
-      // Let b equal the sum of all x-values times the sum of all y-values
-      // Let c equal n times the sum of all squared x-values
-      // Let d equal the squared sum of all x-values
-      var sum = 0;
-      var xSum = 0;
-      var ySum = 0;
-      var sumSq = 0;
-      pts.forEach(function(pt){
-        sum = sum + pt.mult;
-        xSum = xSum + pt.x;
-        ySum = ySum + pt.y;
-        sumSq = sumSq + (pt.x * pt.x);
-      });
-      var a = sum * n;
-      var b = xSum * ySum;
-      var c = sumSq * n;
-      var d = xSum * xSum;
-
-      // Plug the values that you calculated for a, b, c, and d into the following equation to calculate the slope
-      // slope = m = (a - b) / (c - d)
-      var m = (a - b) / (c - d);
-
-      /////////////
-      //INTERCEPT//
-      /////////////
-
-      // Let e equal the sum of all y-values
-      var e = ySum;
-
-      // Let f equal the slope times the sum of all x-values
-      var f = m * xSum;
-
-      // Plug the values you have calculated for e and f into the following equation for the y-intercept
-      // y-intercept = b = (e - f) / n
-      var b = (e - f) / n;
-
-      // return an object of two points
-      // each point is an object with an x and y coordinate
-        console.log((minX) + ", " + (m*minX + b));
-        console.log(((minY - b) / m) + ", " + (minY));
-        
-        var pt1 = [minX, m * minX + b];
-        var pt2 = [(minY - b) / m, minY];
-        
-        
-        var slope = (pt2[1] - pt1[1]) / (pt2[0] - pt1[0]);
-        var xStart = 0;
-        var yStart = pt1[1] + (xStart - pt1[0]) * slope;
-        var start = [xStart, yStart];
-        var xEnd = 50000;
-        var yEnd = pt1[1] + (xEnd - pt1[0]) * slope;
-        var end = [xEnd, yEnd];
-        
-       return {
-        ptA : {
-          x: start[0],
-          y: start[1]
-        },
-        ptB : {
-          x: end[0],
-          y: end[1]
-        }
-      } 
-        
-    }
     </script>
 </body>
 </html>
