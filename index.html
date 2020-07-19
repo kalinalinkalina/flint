@@ -11,11 +11,11 @@
     <p>I removed all rows with NA data.</p>
     <p>Maximum sales price is an outlier at $185 million. I removed this data point. Next highest is 3.6 million</p>
     <p>Converted exact date to months-since-start-date (1998-12-30)</p>
-    <input type="range" name="leadSlider" id="leadSlider" min="195" max="223" value="195" step="1"  onchange="updateLeadSliderText(this.value);">
+    <input type="range" name="leadSlider" id="leadSlider" min="195" max="223" value="195" step="1"  onchange="updateLeadSliderText(this.value);" style="width: 500px;"></br>
+    <svg id="colorbar" width=500 height=30></svg>
     <p id="leadSliderText">April 2015</p>
     <svg id="bar_leadxprice" width=1280 height=600></svg><br/>
-    
-    <input type="range" name="distanceSlider" id="distanceSlider" min="0" max="223" value="184" step="1" list="steplist" onchange="updateDistanceSliderText(this.value);">
+    <input type="range" name="distanceSlider" id="distanceSlider" min="0" max="223" value="184" step="1" list="steplist" onchange="updateDistanceSliderText(this.value);" style="width: 500px;">
     <datalist id="steplist">
         <option>1</option>
         <!--<option>4</option>
@@ -50,8 +50,11 @@
         var svgHeight = 500;
         var svgWidth = 1000;
         
+        var plasma = d3.scaleSequential().domain([195,223]).interpolator(d3.interpolatePlasma);
+        
         //https://stackoverflow.com/questions/17226576/creating-a-text-labeled-x-axis-with-an-ordinal-scaleDist-in-d3-js   
-        var yScalePrice = d3.scalePow().exponent(0.5).domain([3000000,0]).range([0,svgHeight]); //price
+        var yScaleDist = d3.scalePow().exponent(0.5).domain([300000,0]).range([0,svgHeight]); //price
+        var yScaleLead = d3.scalePow().exponent(0.5).domain([3000000,0]).range([0,svgHeight])
         var xScaleDist = d3.scalePow().exponent(0.5).domain([0,50000]).range([0,svgWidth]); //distance
         var xScaleLead = d3.scalePow().exponent(0.5).domain([0,0.65]).range([0,svgWidth]); //lead
         
@@ -80,7 +83,7 @@
             d3.select("#bar_distxprice")
                 .append("g")
                 .attr("transform", "translate(80,50)")
-                .call(d3.axisLeft(yScalePrice));
+                .call(d3.axisLeft(yScaleDist));
             d3.select("#bar_distxprice")
                 .append("g")
                     .attr("transform", "translate(80,550)")
@@ -106,6 +109,17 @@
             ////////////////////////////////////////////////////////////////////////
             
             ////////////////// Draw Lead vs Price bar chart //////////////////
+            var colorBar = d3.select("#colorbar")
+                .selectAll("rect")
+                .data(d3.range(195,223), function(d) { return d; })
+                .enter()
+                .append("rect")
+                .attr("x", function(d,i){return 500/(223-195) * i;})
+                .attr("y", 0)
+                .attr("height", 50)
+                .attr("width", 500)
+                .style("fill", function(d,i){return plasma(d);})
+            
             leadGraph = d3.select("#bar_leadxprice")
                 .append("g")
                 .attr("transform","translate(80,50)");
@@ -116,7 +130,7 @@
             d3.select("#bar_leadxprice")
                 .append("g")
                 .attr("transform", "translate(80,50)")
-                .call(d3.axisLeft(yScalePrice));
+                .call(d3.axisLeft(yScaleLead));
             d3.select("#bar_leadxprice")
                 .append("g")
                     .attr("transform", "translate(80,550)")
@@ -159,12 +173,12 @@
                 .append("circle")
                 .attr("r", 3)
                 .attr("cx", function(d,i){return xScaleDist(d.DistToBoundary);})
-                .attr("cy", function(d,y){return yScalePrice(d.SalesPrice);});
+                .attr("cy", function(d,y){return yScaleDist(d.SalesPrice);});
             
             dots
                 .transition().duration(30)
                 .attr("cx", function(d,i){return xScaleDist(d.DistToBoundary);})
-                .attr("cy", function(d,y){return yScalePrice(d.SalesPrice);});
+                .attr("cy", function(d,y){return yScaleDist(d.SalesPrice);});
             
             dots.exit().remove();
             
@@ -177,15 +191,15 @@
             var line = distanceGraph
                 .append("line")
                 .attr("x1", xScaleDist(lg.ptA.x))
-                .attr("y1", yScalePrice(lg.ptA.y))
+                .attr("y1", yScaleDist(lg.ptA.y))
                 .attr("x2", xScaleDist(lg.ptB.x))
-                .attr("y2", yScalePrice(lg.ptB.y))
+                .attr("y2", yScaleDist(lg.ptB.y))
                 .style("stroke", "blue");
             
         }
         
         async function drawLeadChart(){
-            
+
             var data_month = await data.filter(filterByMonthLead);
             
             var dots = leadGraph
@@ -198,17 +212,21 @@
                 //.attr("class", "dot")
                 .attr("r", 3)
                 .attr("cx", function(d,i){return xScaleLead(d.LeadLevel);})
-                .attr("cy", function(d,i){return yScalePrice(d.SalesPrice);});
-                //.style("fill", function(d,i){return color(cValue(d);)});
-            
+                .attr("cy", function(d,i){return yScaleLead(d.SalesPrice);});
+                
             dots
                 .transition().duration(0)
                 .attr("cx", function(d,i){return xScaleLead(d.LeadLevel);})
-                .attr("cy", function(d,i){return yScalePrice(d.SalesPrice);});
+                .attr("cy", function(d,i){return yScaleLead(d.SalesPrice);});
             
             dots
                 .exit()
                 .remove();
+            
+            leadGraph
+                //.update()
+                .selectAll("circle")
+                .style("fill", function(d,i){return plasma(d.Month);});
         }
         
         // Listen to the sliders
@@ -299,12 +317,8 @@
 
       // return an object of two points
       // each point is an object with an x and y coordinate
-        console.log((minX) + ", " + (m*minX + b));
-        console.log(((minY - b) / m) + ", " + (minY));
-        
         var pt1 = [minX, m * minX + b];
         var pt2 = [(minY - b) / m, minY];
-        
         
         var slope = (pt2[1] - pt1[1]) / (pt2[0] - pt1[0]);
         var xStart = 0;
