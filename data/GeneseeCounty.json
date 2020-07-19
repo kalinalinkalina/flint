@@ -1,0 +1,578 @@
+{
+ "currentVersion": 10.71,
+ "id": 0,
+ "name": "Genesee County",
+ "type": "Feature Layer",
+ "description": "",
+ "geometryType": "esriGeometryPolygon",
+ "sourceSpatialReference": {
+  "wkid": 4326,
+  "latestWkid": 4326
+ },
+ "copyrightText": "",
+ "parentLayer": null,
+ "subLayers": [],
+ "minScale": 0,
+ "maxScale": 0,
+ "drawingInfo": {
+  "renderer": {
+   "type": "simple",
+   "symbol": {
+    "type": "esriSFS",
+    "style": "esriSFSSolid",
+    "color": [
+     255,
+     255,
+     222,
+     255
+    ],
+    "outline": {
+     "type": "esriSLS",
+     "style": "esriSLSSolid",
+     "color": [
+      110,
+      110,
+      110,
+      255
+     ],
+     "width": 0.4
+    }
+   },
+   "label": "",
+   "description": ""
+  },
+  "transparency": 0,
+  "labelingInfo": null
+ },
+ "defaultVisibility": true,
+ "extent": {
+  "xmin": -83.93210996478115,
+  "ymin": 42.78082992455148,
+  "xmax": -83.4528540386836,
+  "ymax": 43.223684062000075,
+  "spatialReference": {
+   "wkid": 4326,
+   "latestWkid": 4326
+  }
+ },
+ "hasAttachments": false,
+ "htmlPopupType": "esriServerHTMLPopupTypeAsHTMLText",
+ "displayField": "NAME",
+ "typeIdField": null,
+ "subtypeFieldName": null,
+ "subtypeField": null,
+ "defaultSubtypeCode": null,
+ "fields": [
+  {
+   "name": "OBJECTID",
+   "type": "esriFieldTypeOID",
+   "alias": "OBJECTID",
+   "domain": null
+  },
+  {
+   "name": "NAME",
+   "type": "esriFieldTypeString",
+   "alias": "NAME",
+   "length": 32,
+   "domain": null
+  },
+  {
+   "name": "STATE_NAME",
+   "type": "esriFieldTypeString",
+   "alias": "STATE_NAME",
+   "length": 35,
+   "domain": null
+  },
+  {
+   "name": "STATE_FIPS",
+   "type": "esriFieldTypeString",
+   "alias": "STATE_FIPS",
+   "length": 2,
+   "domain": null
+  },
+  {
+   "name": "CNTY_FIPS",
+   "type": "esriFieldTypeString",
+   "alias": "CNTY_FIPS",
+   "length": 3,
+   "domain": null
+  },
+  {
+   "name": "FIPS",
+   "type": "esriFieldTypeString",
+   "alias": "FIPS",
+   "length": 5,
+   "domain": null
+  },
+  {
+   "name": "POPULATION",
+   "type": "esriFieldTypeInteger",
+   "alias": "POP2015",
+   "domain": null
+  },
+  {
+   "name": "POP_SQMI",
+   "type": "esriFieldTypeDouble",
+   "alias": "POP15_SQMI",
+   "domain": null
+  },
+  {
+   "name": "POP2010",
+   "type": "esriFieldTypeInteger",
+   "alias": "POP2010",
+   "domain": null
+  },
+  {
+   "name": "POP10_SQMI",
+   "type": "esriFieldTypeDouble",
+   "alias": "POP10_SQMI",
+   "domain": null
+  },
+  {
+   "name": "WHITE",
+   "type": "esriFieldTypeInteger",
+   "alias": "WHITE",
+   "domain": null
+  },
+  {
+   "name": "BLACK",
+   "type": "esriFieldTypeInteger",
+   "alias": "BLACK",
+   "domain": null
+  },
+  {
+   "name": "AMERI_ES",
+   "type": "esriFieldTypeInteger",
+   "alias": "AMERI_ES",
+   "domain": null
+  },
+  {
+   "name": "ASIAN",
+   "type": "esriFieldTypeInteger",
+   "alias": "ASIAN",
+   "domain": null
+  },
+  {
+   "name": "HAWN_PI",
+   "type": "esriFieldTypeInteger",
+   "alias": "HAWN_PI",
+   "domain": null
+  },
+  {
+   "name": "HISPANIC",
+   "type": "esriFieldTypeInteger",
+   "alias": "HISPANIC",
+   "domain": null
+  },
+  {
+   "name": "OTHER",
+   "type": "esriFieldTypeInteger",
+   "alias": "OTHER",
+   "domain": null
+  },
+  {
+   "name": "MULT_RACE",
+   "type": "esriFieldTypeInteger",
+   "alias": "MULT_RACE",
+   "domain": null
+  },
+  {
+   "name": "MALES",
+   "type": "esriFieldTypeInteger",
+   "alias": "MALES",
+   "domain": null
+  },
+  {
+   "name": "FEMALES",
+   "type": "esriFieldTypeInteger",
+   "alias": "FEMALES",
+   "domain": null
+  },
+  {
+   "name": "AGE_UNDER5",
+   "type": "esriFieldTypeInteger",
+   "alias": "AGE_UNDER5",
+   "domain": null
+  },
+  {
+   "name": "AGE_5_9",
+   "type": "esriFieldTypeInteger",
+   "alias": "AGE_5_9",
+   "domain": null
+  },
+  {
+   "name": "AGE_10_14",
+   "type": "esriFieldTypeInteger",
+   "alias": "AGE_10_14",
+   "domain": null
+  },
+  {
+   "name": "AGE_15_19",
+   "type": "esriFieldTypeInteger",
+   "alias": "AGE_15_19",
+   "domain": null
+  },
+  {
+   "name": "AGE_20_24",
+   "type": "esriFieldTypeInteger",
+   "alias": "AGE_20_24",
+   "domain": null
+  },
+  {
+   "name": "AGE_25_34",
+   "type": "esriFieldTypeInteger",
+   "alias": "AGE_25_34",
+   "domain": null
+  },
+  {
+   "name": "AGE_35_44",
+   "type": "esriFieldTypeInteger",
+   "alias": "AGE_35_44",
+   "domain": null
+  },
+  {
+   "name": "AGE_45_54",
+   "type": "esriFieldTypeInteger",
+   "alias": "AGE_45_54",
+   "domain": null
+  },
+  {
+   "name": "AGE_55_64",
+   "type": "esriFieldTypeInteger",
+   "alias": "AGE_55_64",
+   "domain": null
+  },
+  {
+   "name": "AGE_65_74",
+   "type": "esriFieldTypeInteger",
+   "alias": "AGE_65_74",
+   "domain": null
+  },
+  {
+   "name": "AGE_75_84",
+   "type": "esriFieldTypeInteger",
+   "alias": "AGE_75_84",
+   "domain": null
+  },
+  {
+   "name": "AGE_85_UP",
+   "type": "esriFieldTypeInteger",
+   "alias": "AGE_85_UP",
+   "domain": null
+  },
+  {
+   "name": "MED_AGE",
+   "type": "esriFieldTypeDouble",
+   "alias": "MED_AGE",
+   "domain": null
+  },
+  {
+   "name": "MED_AGE_M",
+   "type": "esriFieldTypeDouble",
+   "alias": "MED_AGE_M",
+   "domain": null
+  },
+  {
+   "name": "MED_AGE_F",
+   "type": "esriFieldTypeDouble",
+   "alias": "MED_AGE_F",
+   "domain": null
+  },
+  {
+   "name": "HOUSEHOLDS",
+   "type": "esriFieldTypeInteger",
+   "alias": "HOUSEHOLDS",
+   "domain": null
+  },
+  {
+   "name": "AVE_HH_SZ",
+   "type": "esriFieldTypeDouble",
+   "alias": "AVE_HH_SZ",
+   "domain": null
+  },
+  {
+   "name": "HSEHLD_1_M",
+   "type": "esriFieldTypeInteger",
+   "alias": "HSEHLD_1_M",
+   "domain": null
+  },
+  {
+   "name": "HSEHLD_1_F",
+   "type": "esriFieldTypeInteger",
+   "alias": "HSEHLD_1_F",
+   "domain": null
+  },
+  {
+   "name": "MARHH_CHD",
+   "type": "esriFieldTypeInteger",
+   "alias": "MARHH_CHD",
+   "domain": null
+  },
+  {
+   "name": "MARHH_NO_C",
+   "type": "esriFieldTypeInteger",
+   "alias": "MARHH_NO_C",
+   "domain": null
+  },
+  {
+   "name": "MHH_CHILD",
+   "type": "esriFieldTypeInteger",
+   "alias": "MHH_CHILD",
+   "domain": null
+  },
+  {
+   "name": "FHH_CHILD",
+   "type": "esriFieldTypeInteger",
+   "alias": "FHH_CHILD",
+   "domain": null
+  },
+  {
+   "name": "FAMILIES",
+   "type": "esriFieldTypeInteger",
+   "alias": "FAMILIES",
+   "domain": null
+  },
+  {
+   "name": "AVE_FAM_SZ",
+   "type": "esriFieldTypeDouble",
+   "alias": "AVE_FAM_SZ",
+   "domain": null
+  },
+  {
+   "name": "HSE_UNITS",
+   "type": "esriFieldTypeInteger",
+   "alias": "HSE_UNITS",
+   "domain": null
+  },
+  {
+   "name": "VACANT",
+   "type": "esriFieldTypeInteger",
+   "alias": "VACANT",
+   "domain": null
+  },
+  {
+   "name": "OWNER_OCC",
+   "type": "esriFieldTypeInteger",
+   "alias": "OWNER_OCC",
+   "domain": null
+  },
+  {
+   "name": "RENTER_OCC",
+   "type": "esriFieldTypeInteger",
+   "alias": "RENTER_OCC",
+   "domain": null
+  },
+  {
+   "name": "SQMI",
+   "type": "esriFieldTypeDouble",
+   "alias": "SQMI",
+   "domain": null
+  },
+  {
+   "name": "County",
+   "type": "esriFieldTypeString",
+   "alias": "County",
+   "length": 255,
+   "domain": null
+  },
+  {
+   "name": "EstPop18Ov",
+   "type": "esriFieldTypeDouble",
+   "alias": "Population 18 and Over",
+   "domain": null
+  },
+  {
+   "name": "EstLessHS",
+   "type": "esriFieldTypeDouble",
+   "alias": "Population Less than High School",
+   "domain": null
+  },
+  {
+   "name": "PctHSLess",
+   "type": "esriFieldTypeDouble",
+   "alias": "Percent less than High School",
+   "domain": null
+  },
+  {
+   "name": "PctUnemployed",
+   "type": "esriFieldTypeDouble",
+   "alias": "Percent Unemployed",
+   "domain": null
+  },
+  {
+   "name": "PctNoLabFor",
+   "type": "esriFieldTypeDouble",
+   "alias": "Percent Not in Labor Force",
+   "domain": null
+  },
+  {
+   "name": "MedInc",
+   "type": "esriFieldTypeDouble",
+   "alias": "Median Family Income",
+   "domain": null
+  },
+  {
+   "name": "MeanInc",
+   "type": "esriFieldTypeDouble",
+   "alias": "Mean Family Income",
+   "domain": null
+  },
+  {
+   "name": "PctBelowPovFam",
+   "type": "esriFieldTypeDouble",
+   "alias": "Percent Below Poverty Family",
+   "domain": null
+  },
+  {
+   "name": "PctBelowPovInd",
+   "type": "esriFieldTypeDouble",
+   "alias": "Percent Below Poverty Individual",
+   "domain": null
+  },
+  {
+   "name": "Pop18_24",
+   "type": "esriFieldTypeDouble",
+   "alias": "Population 18 to 24",
+   "domain": null
+  },
+  {
+   "name": "Pop18_24_LessHS",
+   "type": "esriFieldTypeDouble",
+   "alias": "Population 18 to 24 Less than High School",
+   "domain": null
+  },
+  {
+   "name": "Pop25Ovr",
+   "type": "esriFieldTypeDouble",
+   "alias": "Population 25 and Over",
+   "domain": null
+  },
+  {
+   "name": "Pop25Ovr_Less9",
+   "type": "esriFieldTypeDouble",
+   "alias": "Pop 25 and Over Less than 9th grade",
+   "domain": null
+  },
+  {
+   "name": "Pop25Ovr_LessHS",
+   "type": "esriFieldTypeDouble",
+   "alias": "Pop 25 and Over Less than HS",
+   "domain": null
+  },
+  {
+   "name": "PctHS",
+   "type": "esriFieldTypeDouble",
+   "alias": "Percent High School",
+   "domain": null
+  },
+  {
+   "name": "PctBach",
+   "type": "esriFieldTypeDouble",
+   "alias": "Percent Bacheor's Degree",
+   "domain": null
+  },
+  {
+   "name": "PctWhite",
+   "type": "esriFieldTypeDouble",
+   "alias": "Percent White",
+   "domain": null
+  },
+  {
+   "name": "PctBlack",
+   "type": "esriFieldTypeDouble",
+   "alias": "Percent Black",
+   "domain": null
+  },
+  {
+   "name": "PctAIAN",
+   "type": "esriFieldTypeDouble",
+   "alias": "Percent American Indian Alaska Native",
+   "domain": null
+  },
+  {
+   "name": "PctAsian",
+   "type": "esriFieldTypeDouble",
+   "alias": "Percent Asian",
+   "domain": null
+  },
+  {
+   "name": "PctMixRace",
+   "type": "esriFieldTypeDouble",
+   "alias": "Percent Mixed Race",
+   "domain": null
+  },
+  {
+   "name": "PctHisp",
+   "type": "esriFieldTypeDouble",
+   "alias": "Percent Hispanic",
+   "domain": null
+  },
+  {
+   "name": "Shape",
+   "type": "esriFieldTypeGeometry",
+   "alias": "Shape",
+   "domain": null
+  },
+  {
+   "name": "Shape.STArea()",
+   "type": "esriFieldTypeDouble",
+   "alias": "Shape.STArea()",
+   "domain": null
+  },
+  {
+   "name": "Shape.STLength()",
+   "type": "esriFieldTypeDouble",
+   "alias": "Shape.STLength()",
+   "domain": null
+  }
+ ],
+ "geometryField": {
+  "name": "Shape",
+  "type": "esriFieldTypeGeometry",
+  "alias": "Shape"
+ },
+ "indexes": [
+  {
+   "name": "R17_pk",
+   "fields": "OBJECTID",
+   "isAscending": true,
+   "isUnique": true,
+   "description": ""
+  },
+  {
+   "name": "S8_idx",
+   "fields": "Shape",
+   "isAscending": true,
+   "isUnique": true,
+   "description": ""
+  }
+ ],
+ "subtypes": [],
+ "relationships": [],
+ "canModifyLayer": true,
+ "canScaleSymbols": false,
+ "hasLabels": false,
+ "capabilities": "Map,Query,Data",
+ "maxRecordCount": 1000,
+ "supportsStatistics": true,
+ "supportsAdvancedQueries": true,
+ "supportedQueryFormats": "JSON, geoJSON",
+ "isDataVersioned": true,
+ "ownershipBasedAccessControlForFeatures": {"allowOthersToQuery": true},
+ "useStandardizedQueries": true,
+ "advancedQueryCapabilities": {
+  "useStandardizedQueries": true,
+  "supportsStatistics": true,
+  "supportsHavingClause": true,
+  "supportsCountDistinct": true,
+  "supportsOrderBy": true,
+  "supportsDistinct": true,
+  "supportsPagination": true,
+  "supportsTrueCurve": true,
+  "supportsReturningQueryExtent": true,
+  "supportsQueryWithDistance": true,
+  "supportsSqlExpression": true
+ },
+ "supportsDatumTransformation": true,
+ "supportsCoordinatesQuantization": true
+}
