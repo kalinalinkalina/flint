@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <script  type="text/javascript" src="libs/d3.v5.min.js"></script>
     <script type="text/javascript" src="libs/topojson.v3.min.js"></script> 
-    <script src="https://maps.googleapis.com/maps/api/js"></script>
     <style></style>
 </head>
 <body onload="init()">
@@ -18,9 +17,9 @@
     <h2 id="mapSliderText">May 2014: Start of Flint water crisis</h2><br/>
     <!--<svg id="colorbar" width=500 height=30></svg><br/>-->
     <input type="range" name="mapSlider" id="mapSlider" min="1" max="223" value="184" step="1"  onchange="updateMapSliderText(this.value);" style="width: 500px;"><br/>
-    <!--<svg id="map" width=1280 height=600>
-        <image height=1000 x=-70 y=-320 href="data/flintmap.png"/>
-    </svg>-->
+    <svg id="map" width=1280 height=600>
+        <!--<image height=1000 x=-70 y=-320 href="data/flintmap.png"/>-->
+    </svg>
     
     <h2 id="leadSliderText">April 2015</h2><br/>
     <svg id="colorbar" width=500 height=30></svg><br/>
@@ -51,6 +50,7 @@
         var svgWidth = 1000;
         
         var projection = d3.geoMercator().center([-83.6875,43.0125]).scale(100000);
+        var path = d3.geoPath().projection(projection); 
         
         var plasmaLead = d3.scaleSequential().domain([195,223]).interpolator(d3.interpolatePlasma);
         var plasmaDist = d3.scaleSequential().domain([1,223]).interpolator(d3.interpolatePlasma);
@@ -172,8 +172,6 @@
             mapChart = d3.select("#map")
                 .append("g")
                 .attr("transform", "translate(80,50)");
-
-            var path = d3.geoPath().projection(projection); 
             
             drawMap();
             
@@ -321,6 +319,35 @@
             var div = d3.select("#tooltip");
         
             var data_month = await data.filter(filterByMonthMap);
+            
+            
+            
+            var geojson = d3.json("https://raw.githubusercontent.com/kalinalinkalina/flint/master/data/genesee.json").then(function(json){
+            
+               projection.fitSize([svgWidth,svgHeight], json);
+            for(var i=0; i<data.length; i++){
+                var lat = data.Latitude;
+                var lon = data.Longitude;
+                json.arcs.push()
+            }
+               
+               
+            mapChart
+                .selectAll("path")
+                .data(json.arcs)
+                .join("path")
+                .attr("d", path)
+                .attr("fill", "#088")
+                .attr("fill-opacity", "0.5")
+                .attr("stroke", "#000");
+                
+            });
+            
+            
+            
+            
+            
+            
             
             var circles = mapChart
                 .selectAll("circle")
