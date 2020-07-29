@@ -20,6 +20,7 @@
     <p>Move the slider to change the date, and see the data updated in the chart below. The best-fit line for the data is drawn for each month, starting from purple in the distant past and moving toward yellow closer to the present.</p>
     
     <h3 id="distanceSliderText">May 2014: First month after start of Flint water crisis</h3><br/>
+    <svg id="colorbarDist" width=500 height=30></svg><br/>
     <input type="range" name="distanceSlider" id="distanceSlider" min="0" max="223" value="184" step="1" list="steplistDist" onchange="updateDistanceSliderText(this.value);" style="width: 500px;">
     <datalist id="steplistDist">
         <option value="1">1</option>
@@ -32,14 +33,14 @@
     
     <hr>
     
-    <p>Now we can look at this data on a map.</p>
+    <p>Now we can look at this data on a map. Though the center of the town had always had more "red" then the outskirts of town, as we move forward in time, this distinction becomes much more pronounced and there is less "mixing" between the red and green points.</p>
     
     <div id="tooltip" style="opacity:0; position:absolute; background: white;"></div>
     
     <h3 id="mapPriceSliderText">May 2014: First month after start of Flint water crisis</h3><br/>
     <!--<svg id="colorbar" width=500 height=30></svg><br/>-->
-    <input type="range" name="mapPriceSlider" id="mapPriceSlider" min="1" max="223" value="184" step="1"  onchange="updateMapPriceSliderText(this.value);" style="width: 500px;">
-    <datalist id="steplist">
+    <input type="range" name="mapPriceSlider" id="mapPriceSlider" min="1" max="223" value="184" step="1"  onchange="updateMapPriceSliderText(this.value);" style="width: 500px;" list="steplistMap">
+    <datalist id="steplistMap">
         <option value="1">1</option>
         <option value="184">184</option>
         <option value="222">222</option>
@@ -50,7 +51,7 @@
     
     
     <h3 id="leadSliderText">April 2015: One year after start of Flint water crisis</h3><br/>
-    <svg id="colorbar" width=500 height=30></svg><br/>
+    <svg id="colorbarLead" width=500 height=30></svg><br/>
     <input type="range" name="leadSlider" id="leadSlider" min="195" max="223" value="195" step="1"  onchange="updateLeadSliderText(this.value);" style="width: 500px;"><br/>
     <svg id="bar_leadxprice" width=1280 height=600></svg><br/>
     
@@ -120,6 +121,17 @@
             data = await d3.csv("https://raw.githubusercontent.com/kalinalinkalina/flint/master/data/flint_months_noNAs_noExpectedLead.csv");
             
             ////////////////// Draw Distance vs Price bar chart //////////////////
+            var colorBarDist = d3.select("#colorbarDist")
+                .selectAll("rect")
+                .data(d3.range(1,223), function(d) { return d; })
+                .enter()
+                .append("rect")
+                .attr("x", function(d,i){return 500/(223-1) * i;})
+                .attr("y", 0)
+                .attr("height", 50)
+                .attr("width", 500)
+                .style("fill", function(d,i){return plasmaDist(d);})
+            
             distanceGraph = d3.select("#bar_distxprice")
                 .append("g")
                 .attr("transform","translate(80,50)");
@@ -156,7 +168,7 @@
             ////////////////////////////////////////////////////////////////////////
             
             ////////////////// Draw Lead vs Price bar chart //////////////////
-            var colorBar = d3.select("#colorbar")
+            var colorBarLead = d3.select("#colorbarLead")
                 .selectAll("rect")
                 .data(d3.range(195,223), function(d) { return d; })
                 .enter()
@@ -234,6 +246,10 @@
             
             var data_month = await data.filter(filterByMonthDist);
             
+            data_month = data_month.sort(function(a,b){
+                return a.Month - b.Month;
+            });
+            
             var dots = distanceGraph
                 .selectAll("circle")
                 .data(data_month);
@@ -252,7 +268,7 @@
                     div.transition()
                     .duration(50)
                     .style("opacity", 1);
-                    let text = "Distance to Boundary: " + d.DistToBoundary + "<br/>Sales Price: " + d.SalesPrice;
+                    let text = "Distance to Boundary: " + d.DistToBoundary + "<br/>Sales Price: $" + d.SalesPrice;
                     div.html(text)
                         .style("left", (d3.event.pageX + 10) + "px")
                         .style("top", (d3.event.pageY - 15) + "px")
@@ -303,6 +319,11 @@
             var div = d3.select("#tooltip");
             
             var data_month = await data.filter(filterByMonthLead);
+            
+            data_month = data_month.sort(function(a,b){
+                return a.Month - b.Month;
+            });
+            
             
             var dots = leadGraph
                 .selectAll("circle")
@@ -386,9 +407,9 @@
             //    if (a.SalesPrice < 100000) return -1;
             //    else return 1;
             //});
-            //data_month = data_month.sort(function(a,b){
-            //    return b.Month - a.Month;
-            //});
+            data_month = data_month.sort(function(a,b){
+                return a.Month - b.Month;
+            });
             
             var circles = mapLeadChart
                 .selectAll("circle")
@@ -469,9 +490,9 @@
             //    if (a.SalesPrice < 100000) return -1;
             //    else return 1;
             //});
-            //data_month = data_month.sort(function(a,b){
-            //    return b.Month - a.Month;
-            //});
+            data_month = data_month.sort(function(a,b){
+                return a.Month - b.Month;
+            });
             
             var circles = mapPriceChart
                 .selectAll("circle")
