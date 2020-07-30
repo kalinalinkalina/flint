@@ -53,7 +53,10 @@
     <h3 id="leadSliderText">April 2015: One year after start of Flint water crisis</h3><br/>
     <svg id="colorbarLead" width=500 height=30></svg><br/>
     <input type="range" name="leadSlider" id="leadSlider" min="195" max="223" value="195" step="1"  onchange="updateLeadSliderText(this.value);" style="width: 500px;"><br/>
-    <svg id="bar_leadxprice" width=1280 height=600></svg><br/>
+    <svg id="bar_leadxprice" width=1280 height=600>
+        <text x="110" y="45" fill="green">EPA safe threshold</text>
+        <text x="355" y="45" fill="red">Children should not be exposed above this amount</text>
+    </svg><br/>
     
     
     <hr>
@@ -186,6 +189,8 @@
             drawLeadChart();
             
             // Add axes
+            ticks = xScaleLead.ticks();
+            ticks.push(0.015);
             d3.select("#bar_leadxprice")
                 .append("g")
                 .attr("transform", "translate(80,50)")
@@ -193,7 +198,7 @@
             d3.select("#bar_leadxprice")
                 .append("g")
                     .attr("transform", "translate(80,550)")
-                    .call(d3.axisBottom(xScaleLead));
+                    .call(d3.axisBottom(xScaleLead).tickValues(ticks));
             
             // Add axes labels
             d3.select("#bar_leadxprice")
@@ -325,6 +330,26 @@
             });
             
             
+            // Draw safe line
+            var line = leadGraph
+                .append("line")
+                .attr("x1", xScaleLead(0.015))
+                .attr("y1", yScaleLead(0))
+                .attr("x2", xScaleLead(0.015))
+                .attr("y2", yScaleLead(3000000))
+                .style("stroke", "green")
+                .style("stroke-width", 5);
+            
+            // Draw dangerous line
+            var line = leadGraph
+                .append("line")
+                .attr("x1", xScaleLead(0.05))
+                .attr("y1", yScaleLead(0))
+                .attr("x2", xScaleLead(0.05))
+                .attr("y2", yScaleLead(3000000))
+                .style("stroke", "red")
+                .style("stroke-width", 5);
+            
             var dots = leadGraph
                 .selectAll("circle")
                 .data(data_month);
@@ -372,6 +397,7 @@
                 //.update()
                 .selectAll("circle")
                 .style("fill", function(d,i){return plasmaLead(d.Month);});
+            
         }
         
         async function drawMapLead(){
