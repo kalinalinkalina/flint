@@ -43,6 +43,11 @@
     <div id="tooltip" style="opacity:0; position:absolute; background: white;"></div>
     
     <h3 id="mapPriceSliderText">May 2014: First month after start of Flint water crisis</h3><br/>
+    <svg width=520 height=20>
+        <text x="0" y="15" fill="blue">2/99</text>
+        <text x="395" y="15" fill="blue">5/14</text>
+        <text x="485" y="15" fill="blue">7/17</text>
+    </svg><br/>
     <input type="range" name="mapPriceSlider" id="mapPriceSlider" min="1" max="223" value="184" step="1"  onchange="updateMapPriceSliderText(this.value);" style="width: 500px;" list="steplistMap">
     <datalist id="steplistMap">
         <option value="1">1</option>
@@ -53,10 +58,14 @@
         <svg id="colorbarMapPrice" width=50 height=500></svg>
         <text x="2" y="22" fill="green">$100,000+</text>
         <text x="2" y="515" fill="#8b0000">$1</text>
-        <line x1="500" y1="240" x2="590" y2="240" style="stroke:blue;stroke-width:2;opacity:.5" />
-        <line x1="590" y1="330" x2="590" y2="240" style="stroke:blue;stroke-width:2;opacity:.5" />
-        <line x1="500" y1="240" x2="500" y2="330" style="stroke:blue;stroke-width:2;opacity:.5" />
-        <line x1="590" y1="330" x2="500" y2="330" style="stroke:blue;stroke-width:2;opacity:.5" />
+        <line x1="500" y1="240" x2="590" y2="240" style="stroke:blue;stroke-width:2" />
+        <line x1="590" y1="330" x2="590" y2="240" style="stroke:blue;stroke-width:2" />
+        <line x1="500" y1="240" x2="500" y2="330" style="stroke:blue;stroke-width:2" />
+        <line x1="590" y1="330" x2="500" y2="330" style="stroke:blue;stroke-width:2" />
+        
+        <line x1="590" y1="240" x2="900" y2="200" style="stroke:blue;stroke-width:2" />
+        <text x="905" y="205" fill="blue">Pipeline boundary</text>
+        
     </svg>
     
     <hr>
@@ -80,16 +89,23 @@
     <div id="tooltip" style="opacity:0; position:absolute; background: white;"></div>
     
     <h3 id="mapLeadSliderText">April 2015: One year after start of Flint water crisis</h3><br/>
+    <svg width=520 height=20>
+        <text x="0" y="15" fill="blue">4/15</text>
+        <text x="485" y="15" fill="blue">8/17</text>
+    </svg><br/>
     <input type="range" name="mapLeadSlider" id="mapLeadSlider" min="195" max="223" value="195" step="1"  onchange="updateMapLeadSliderText(this.value);" style="width: 500px;"><br/>
     <svg id="mapLead" width=1280 height=600>
     <svg id="colorbarMapLead" width=50 height=500></svg>
         <text x="2" y="22" fill="#8b0000">0.05+</text>
         <text x="10" y="515" fill="green">0</text>
         
-        <line x1="500" y1="240" x2="590" y2="240" style="stroke:blue;stroke-width:2;opacity:.5" />
-        <line x1="590" y1="330" x2="590" y2="240" style="stroke:blue;stroke-width:2;opacity:.5" />
-        <line x1="500" y1="240" x2="500" y2="330" style="stroke:blue;stroke-width:2;opacity:.5" />
-        <line x1="590" y1="330" x2="500" y2="330" style="stroke:blue;stroke-width:2;opacity:.5" />
+        <line x1="500" y1="240" x2="590" y2="240" style="stroke:blue;stroke-width:2" />
+        <line x1="590" y1="330" x2="590" y2="240" style="stroke:blue;stroke-width:2" />
+        <line x1="500" y1="240" x2="500" y2="330" style="stroke:blue;stroke-width:2" />
+        <line x1="590" y1="330" x2="500" y2="330" style="stroke:blue;stroke-width:2" />
+        
+        <line x1="590" y1="240" x2="900" y2="200" style="stroke:blue;stroke-width:2" />
+        <text x="905" y="205" fill="blue">Pipeline boundary</text>
     </svg>
     
     
