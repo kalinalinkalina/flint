@@ -53,6 +53,10 @@
         <svg id="colorbarMapPrice" width=50 height=500></svg>
         <text x="2" y="22" fill="green">$100,000+</text>
         <text x="2" y="515" fill="#8b0000">$1</text>
+        <line x1="500" y1="240" x2="590" y2="240" style="stroke:blue;stroke-width:2;opacity:.5" />
+        <line x1="590" y1="330" x2="590" y2="240" style="stroke:blue;stroke-width:2;opacity:.5" />
+        <line x1="500" y1="240" x2="500" y2="330" style="stroke:blue;stroke-width:2;opacity:.5" />
+        <line x1="590" y1="330" x2="500" y2="330" style="stroke:blue;stroke-width:2;opacity:.5" />
     </svg>
     
     <hr>
@@ -81,6 +85,11 @@
     <svg id="colorbarMapLead" width=50 height=500></svg>
         <text x="2" y="22" fill="#8b0000">0.05+</text>
         <text x="10" y="515" fill="green">0</text>
+        
+        <line x1="500" y1="240" x2="590" y2="240" style="stroke:blue;stroke-width:2;opacity:.5" />
+        <line x1="590" y1="330" x2="590" y2="240" style="stroke:blue;stroke-width:2;opacity:.5" />
+        <line x1="500" y1="240" x2="500" y2="330" style="stroke:blue;stroke-width:2;opacity:.5" />
+        <line x1="590" y1="330" x2="500" y2="330" style="stroke:blue;stroke-width:2;opacity:.5" />
     </svg>
     
     
@@ -466,6 +475,32 @@
                 .attr("stroke", "#333");
                 
             });
+            
+            /*
+            // Draw pipe boundary
+            var links = [{
+                type: "LineString",
+                coordinates: [
+                    [-83.7317, 43.0754],
+                    [-83.6493, 43.0737],
+                    [-83.6414, 42.9909],
+                    [-83.7317, 42.9909]
+                    //[43.0754, -83.7317],
+                    //[43.0737, -83.6493],
+                    //[42.9909, -83.6414],
+                    //[42.9909, -83.7317]
+                ]
+            }];
+            var arcGroup = mapLeadChart.append('g');
+            var pathArcs = arcGroup
+                .selectAll("arc")
+                .data(links)
+                //.join("path")
+                //.attr("d", links)
+                .attr("stroke", "blue")
+                .attr("stroke-width", "2px");*/
+
+            
             
             // Sort the data so the values we want are drawn on top
             //data = data.sort(function(a,b){
