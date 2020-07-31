@@ -20,6 +20,11 @@
     <p>Move the slider to change the date, and see the data updated in the chart below. The best-fit line for the data is drawn for each month, starting from purple in the distant past and moving toward yellow closer to the present.</p>
     
     <h3 id="distanceSliderText">May 2014: First month after start of Flint water crisis</h3><br/>
+    <svg id="colorbarDistLabel" width=520 height=20>
+        <text x="0" y="15" fill="#310080">2/99</text>
+        <text x="395" y="15" fill="orange">5/14</text>
+        <text x="485" y="15" fill="#e3d000">7/17</text>
+    </svg><br/>
     <svg id="colorbarDist" width=500 height=30></svg><br/>
     <input type="range" name="distanceSlider" id="distanceSlider" min="0" max="223" value="184" step="1" list="steplistDist" onchange="updateDistanceSliderText(this.value);" style="width: 500px;">
     <datalist id="steplistDist">
@@ -38,24 +43,31 @@
     <div id="tooltip" style="opacity:0; position:absolute; background: white;"></div>
     
     <h3 id="mapPriceSliderText">May 2014: First month after start of Flint water crisis</h3><br/>
-    <!--<svg id="colorbar" width=500 height=30></svg><br/>-->
     <input type="range" name="mapPriceSlider" id="mapPriceSlider" min="1" max="223" value="184" step="1"  onchange="updateMapPriceSliderText(this.value);" style="width: 500px;" list="steplistMap">
     <datalist id="steplistMap">
         <option value="1">1</option>
         <option value="184">184</option>
         <option value="222">222</option>
     </datalist> <br/>
-    <svg id="mapPrice" width=1280 height=600></svg>
+    <svg id="mapPrice" width=1280 height=600>
+        <svg id="colorbarMapPrice" width=50 height=500></svg>
+        <text x="2" y="22" fill="green">$100,000+</text>
+        <text x="2" y="515" fill="#8b0000">$1</text>
+    </svg>
     
     <hr>
     
     
     <h3 id="leadSliderText">April 2015: One year after start of Flint water crisis</h3><br/>
+    <svg id="colorbarLeadLabel" width=520 height=20>
+        <text x="0" y="15" fill="#310080">4/15</text>
+        <text x="485" y="15" fill="#e3d000">8/17</text>
+    </svg><br/>
     <svg id="colorbarLead" width=500 height=30></svg><br/>
     <input type="range" name="leadSlider" id="leadSlider" min="195" max="223" value="195" step="1"  onchange="updateLeadSliderText(this.value);" style="width: 500px;"><br/>
     <svg id="bar_leadxprice" width=1280 height=600>
-        <text x="110" y="45" fill="green">EPA safe threshold</text>
-        <text x="355" y="45" fill="red">Children should not be exposed above this amount</text>
+        <text x="110" y="45" fill="#99cc33">EPA safe threshold</text>
+        <text x="355" y="45" fill="#8b0000">Children should not be exposed above this amount</text>
     </svg><br/>
     
     
@@ -64,9 +76,12 @@
     <div id="tooltip" style="opacity:0; position:absolute; background: white;"></div>
     
     <h3 id="mapLeadSliderText">April 2015: One year after start of Flint water crisis</h3><br/>
-    <!--<svg id="colorbar" width=500 height=30></svg><br/>-->
     <input type="range" name="mapLeadSlider" id="mapLeadSlider" min="195" max="223" value="195" step="1"  onchange="updateMapLeadSliderText(this.value);" style="width: 500px;"><br/>
-    <svg id="mapLead" width=1280 height=600></svg>
+    <svg id="mapLead" width=1280 height=600>
+    <svg id="colorbarMapLead" width=50 height=500></svg>
+        <text x="2" y="22" fill="#8b0000">0.05+</text>
+        <text x="10" y="515" fill="green">0</text>
+    </svg>
     
     
     <script>
@@ -90,6 +105,8 @@
         var plasmaDist = d3.scaleSequential().domain([1,223]).interpolator(d3.interpolatePlasma);
         var redGreenPrice = d3.scaleSequential().domain([0,100000]).interpolator(d3.interpolateRdYlGn);
         var redGreenLead = d3.scaleSequential().domain([0.05,0]).interpolator(d3.interpolateRdYlGn);
+        var redGreenPriceInverse = d3.scaleSequential().domain([100000,0]).interpolator(d3.interpolateRdYlGn);
+        var redGreenLeadInverse = d3.scaleSequential().domain([0,0.05]).interpolator(d3.interpolateRdYlGn);
         
         //https://stackoverflow.com/questions/17226576/creating-a-text-labeled-x-axis-with-an-ordinal-scaleDist-in-d3-js   
         var yScaleDist = d3.scalePow().exponent(0.5).domain([300000,0]).range([0,svgHeight]); 
@@ -222,13 +239,35 @@
             
             ////////////////// Draw Lead Map //////////////////
             
+            var colorBarMapPrice = d3.select("#colorbarMapLead")
+                .selectAll("rect")
+                .data(d3.range(0,500), function(d) { return d; })
+                .enter()
+                .append("rect")
+                .attr("x", 0)
+                .attr("y", function(d,i){return 30+500/(500-1) * i;})
+                .attr("height", 500)
+                .attr("width", 30)
+                .style("fill", function(d,i){return redGreenLeadInverse(d/10000);})
+            
             mapLeadChart = d3.select("#mapLead")
                 .append("g")
                 .attr("transform", "translate(80,50)");
             
             drawMapLead();
             
-            //////////////////////////////////////////////
+            ////////////////////Draw Price Map ////////////////////////
+            
+            var colorBarMapPrice = d3.select("#colorbarMapPrice")
+                .selectAll("rect")
+                .data(d3.range(1,1000), function(d) { return d; })
+                .enter()
+                .append("rect")
+                .attr("x", 0)
+                .attr("y", function(d,i){return 30+500/(1000-1) * i;})
+                .attr("height", 500)
+                .attr("width", 30)
+                .style("fill", function(d,i){return redGreenPriceInverse(d*100);})
             
             mapPriceChart = d3.select("#mapPrice")
                 .append("g")
@@ -337,7 +376,7 @@
                 .attr("y1", yScaleLead(0))
                 .attr("x2", xScaleLead(0.015))
                 .attr("y2", yScaleLead(3000000))
-                .style("stroke", "green")
+                .style("stroke", "#99cc33")
                 .style("stroke-width", 5);
             
             // Draw dangerous line
@@ -347,7 +386,7 @@
                 .attr("y1", yScaleLead(0))
                 .attr("x2", xScaleLead(0.05))
                 .attr("y2", yScaleLead(3000000))
-                .style("stroke", "red")
+                .style("stroke", "#8b0000")
                 .style("stroke-width", 5);
             
             var dots = leadGraph
