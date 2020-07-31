@@ -337,7 +337,7 @@
                     div.transition()
                     .duration(50)
                     .style("opacity", 1);
-                    let text = "Distance to Boundary: " + d.DistToBoundary + "<br/>Sales Price: $" + d.SalesPrice;
+                    let text = "Distance to Boundary: " + d.DistToBoundary + "m<br/>Sales Price: $" + d.SalesPrice;
                     div.html(text)
                         .style("left", (d3.event.pageX + 10) + "px")
                         .style("top", (d3.event.pageY - 15) + "px")
@@ -433,7 +433,7 @@
                     div.transition()
                     .duration(50)
                     .style("opacity", 1);
-                    let text = "Lead Level: " + d.LeadLevel + "<br/>Sales Price: " + d.SalesPrice;
+                    let text = "Lead Level: " + d.LeadLevel + "μg/L<br/>Sales Price: $" + d.SalesPrice;
                     div.html(text)
                         .style("left", (d3.event.pageX + 10) + "px")
                         .style("top", (d3.event.pageY - 15) + "px")
@@ -546,7 +546,7 @@
                     div.transition()
                     .duration(50)
                     .style("opacity", 1);
-                    let text = "Sales Price: " + d.SalesPrice;
+                    let text = "Lead Level: " + d.LeadLevel + "μg/L";
                     div.html(text)
                         .style("left", (d3.event.pageX + 10) + "px")
                         .style("top", (d3.event.pageY - 15) + "px")
@@ -629,7 +629,7 @@
                     div.transition()
                     .duration(50)
                     .style("opacity", 1);
-                    let text = "Sales Price: " + d.SalesPrice;
+                    let text = "Sales Price: $" + d.SalesPrice;
                     div.html(text)
                         .style("left", (d3.event.pageX + 10) + "px")
                         .style("top", (d3.event.pageY - 15) + "px")
