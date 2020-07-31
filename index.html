@@ -38,7 +38,7 @@
     
     <hr>
     
-    <p>Now we can look at this same data on a map. Though the center of the town had always had more "red" then the outskirts of town, as we move forward in time, this distinction becomes much more pronounced and there is less "mixing" between the red and green points. The richer neighborhoods slowly return to normal, while the poor neighborhoods remain affected.</p>
+    <p>Now we can look at this same data on a map. The approximate outline of the affected water pipeline is shown in blue, surrounding the center part of town. Houses that sold for low prices (under $50,000) are shown in shades of red, and more expensive houses are shown in green. Though the center of town had always had more "red" then the outskirts of town, as we move forward in time, this distinction becomes much more pronounced and there is less "mixing" between the red and green points. The richer neighborhoods slowly return to normal, while the poor neighborhoods remain affected.</p>
     
     <div id="tooltip" style="opacity:0; position:absolute; background: white;"></div>
     
@@ -59,6 +59,7 @@
         <text x="35" y="45" fill="green">$100,000+</text>
         <text x="35" y="273" fill="#e3d000">$50,000</text>
         <text x="35" y="500" fill="#8b0000">$1</text>
+        <text x="0" y="525">Sales Price</text>
         
         <line x1="590" y1="240" x2="900" y2="200" style="stroke:blue;stroke-width:2" />
         <text x="905" y="205" fill="blue">Pipeline boundary</text>
@@ -67,7 +68,9 @@
     
     <hr>
     
+    <p>Data on lead levels in individual houses started being collected one year after the crisis began, in April 2015. At this time, there were many houses with extremely dangerous lead levels in their water. While no amount of lead can be considered "safe", the Environmental Protection Agency (EPA) recommends that drinking water contain less than 0.015 μg/L of lead. When numbers reach 0.05 μg/L, this becomes definitively dangerous. A year after the start of the crisis, many houses still had extremely high levels of lead in their water.</p>
     
+    <p>By the end of 2015, after bad press about the abysmal numbers, the lead levels got better. But as time went on, people and media forgot about Flint, MI, and the numbers started to creep up once again. Use the slider to move forward in time ad explore the data.</p>
     <h3 id="leadSliderText">April 2015: One year after start of Flint water crisis</h3><br/>
     <svg id="colorbarLeadLabel" width=520 height=20>
         <text x="0" y="15" fill="#310080">4/15</text>
@@ -82,6 +85,8 @@
     
     
     <hr>
+    
+    <p>Once again, we can look at this same data on a map to get an idea for the physical distribution. Initially, the southwest region had the most dangerous, highest (reddest) lead levels. However once the lead levels improved (turned more green), it was the northwest region that started edging toward yellow. </p>
     
     <div id="tooltip" style="opacity:0; position:absolute; background: white;"></div>
     
@@ -99,6 +104,7 @@
         <text x="35" y="318" fill="#d3e35f">0.02</text>
         <text x="35" y="409" fill="#77ab29">0.01</text>
         <text x="35" y="500" fill="green">0</text>
+        <text x="0" y="525">Lead Level (μg/L)</text>
 
         <line x1="590" y1="240" x2="900" y2="200" style="stroke:blue;stroke-width:2" />
         <text x="905" y="205" fill="blue">Pipeline boundary</text>
