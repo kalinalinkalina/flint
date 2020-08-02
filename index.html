@@ -17,7 +17,7 @@
     
     <p>This first chart tracks individual home sales month-by-month, plotting the house's sales price against the house's distance to the affected water pipe boundary. At first glance, it appears that houses closer to the boundary are harder hit with lower sales prices. But if you compare against past and future sales, it becomes apparent that the houses closest to the water pipe boundary were in poorer areas to begin with. At the start of the crisis, the trend (orange line) for all houses in the county has been negatively affected about equally, not just the ones closest to the water pipe. However, as time has gone on, houses farther away from the pipe begin to recover in terms of sales price, while closeby houses remain low. </p>
     
-    <p>Move the slider to change the date, and see the data updated in the chart below. The best-fit line for the data is drawn for each month, starting from purple in the distant past and moving toward yellow closer to the present.</p>
+    <p>Move the slider to change the date, and see the data updated in the chart below. The best-fit line for the data is drawn for each month, starting from purple in the distant past and moving toward yellow closer to the present. Hover over a data point to see its exact value.</p>
     
     <h3 id="distanceSliderText">May 2014: First month after start of Flint water crisis</h3><br/>
     <svg id="colorbarDistLabel" width=520 height=20>
@@ -346,11 +346,11 @@
                 })
                 .on('mouseout', function (d, i) {
                     d3.select(this).transition()
-                    .duration('50')
+                    .duration('500')
                     .attr('opacity', '1');
                     //Makes the new div disappear:
                     div.transition()
-                    .duration('50')
+                    .duration('3000')
                     .style("opacity", 0);
                 });
                 
@@ -442,13 +442,24 @@
                 })
                 .on('mouseout', function (d, i) {
                     d3.select(this).transition()
-                    .duration('50')
+                    .duration('500')
                     .attr('opacity', '1');
                     //Makes the new div disappear:
                     div.transition()
-                    .duration('50')
+                    .duration('3000')
                     .style("opacity", 0);
                 });
+            
+            // Voronoi
+            /*var voronoi = d3.voronoi()
+                //.x(function(d){ return xScaleLead(d.LeadLevel); })
+                //.y(function(d){ return yScaleLead(d.SalesPrice); })
+                .extent([0,0], [svgWidth, svgHeight]);
+            var vpath = leadGraph.append("g").selectAll("path");
+            vpath.data(voronoi.polygons(data_month)).enter().append("path")
+                .attr("stroke", "blue")
+                .attr("fill", "none")
+                .attr("d", function(d,i){return "M" + d.join("L") + "Z";});*/
                 
             dots
                 .transition().duration(0)
@@ -548,18 +559,18 @@
                     div.transition()
                     .duration(50)
                     .style("opacity", 1);
-                    let text = "Lead Level: " + d.LeadLevel + "μg/L";
+                    let text = "Lead Level: " + d.LeadLevel + "μg/L<br/>Sales Price: $" + d.SalesPrice;
                     div.html(text)
                         .style("left", (d3.event.pageX + 10) + "px")
                         .style("top", (d3.event.pageY - 15) + "px")
                 })
                 .on('mouseout', function (d, i) {
                     d3.select(this).transition()
-                    .duration('50')
+                    .duration('500')
                     .attr('opacity', '1');
                     //Makes the new div disappear:
                     div.transition()
-                    .duration('50')
+                    .duration('3000')
                     .style("opacity", 0);
             });
             
@@ -650,11 +661,11 @@
                 })
                 .on('mouseout', function (d, i) {
                     d3.select(this).transition()
-                    .duration('50')
+                    .duration('500')
                     .attr('opacity', '1');
                     //Makes the new div disappear:
                     div.transition()
-                    .duration('50')
+                    .duration('3000')
                     .style("opacity", 0);
             });
             
